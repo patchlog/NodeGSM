@@ -60,7 +60,13 @@ module.exports = class Parser {
     parseTextMessageResult(result) {
         const list = result.split("\r\n")
         let messages = []
+        if (list.length == 0) {
+            return messages
+        }
         for (let i = 0; i < list.length; i += 2) {
+            if(!list[0].startsWith("+CMGL")) {
+                continue
+            }
             const parts = list[i].replace("+CMGL: ","").split(",")
             
             const index = parseInt(parts[0])
