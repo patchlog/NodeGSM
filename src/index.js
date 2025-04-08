@@ -14,11 +14,12 @@ class GSM {
      * 
      * @param {String} path - A path to the GSM Modem device (ex: '/dev/gsmmodem')
      */
-    constructor(path) {
+    constructor(path, options = {baudRate: 460800, timeout: TIMEOUT_DEFAULT}) {
         this.path = path
         this.connected = false
-        this.serialPort = new SerialPort(path, { baudRate: 460800, autoOpen: false })
+        this.serialPort = new SerialPort(path, { baudRate: options?.baudRate || 460800, autoOpen: false })
         this.parser = new Parser()
+        this.timeout = options?.timeout || TIMEOUT_DEFAULT
     }
 
     /**
@@ -377,7 +378,7 @@ class GSM {
     }
 
     async runCommand(command, timeout) {
-        if(!timeout) { timeout = TIMEOUT_DEFAULT }
+        if(!timeout) { timeout = this.timeout }
         return new Promise((resolve, reject) => {
             if (!this.connected) { return reject("Not Connected") }
 
